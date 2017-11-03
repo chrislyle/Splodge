@@ -10,7 +10,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
@@ -33,7 +32,6 @@ public class DrawingView extends ScrollView {
     private Bitmap canvasBitmap;
     private Bitmap imageBGBitmap;
     private float brushSize, lastBrushSize;
-    private boolean erase = false;
 
     float downX = 0;
     float downY = 0;
@@ -209,7 +207,6 @@ public class DrawingView extends ScrollView {
         return true;
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // detect user touch
@@ -249,10 +246,9 @@ public class DrawingView extends ScrollView {
 
     public void setBrushSize(float newSize) {
         // update size
-        float pixelAmount = TypedValue.applyDimension(
+        brushSize = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, newSize, getResources()
                         .getDisplayMetrics());
-        brushSize = pixelAmount;
         drawPaint.setStrokeWidth(brushSize);
     }
 
@@ -266,8 +262,7 @@ public class DrawingView extends ScrollView {
 
     public void setErase(boolean isErase) {
         // set erase true or false
-        erase = isErase;
-        if (erase) {
+        if (isErase) {
             drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         } else
             drawPaint.setXfermode(null);
