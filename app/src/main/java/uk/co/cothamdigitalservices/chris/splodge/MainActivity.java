@@ -29,7 +29,8 @@ public class MainActivity extends Activity implements OnClickListener {
     int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 78123;
     private static final int SELECT_PICTURE = 1;
     private DrawingView drawView;
-    private ImageButton currPaint, drawBtn, eraseBtn, newBtn, saveBtn, openGalleryBtn, toggleMoveBtn;
+    private ImageButton currPaint;
+    private ImageButton toggleMoveBtn;
     private float smallBrush, mediumBrush, largeBrush;
 
     Bitmap bmp_on;
@@ -52,18 +53,18 @@ public class MainActivity extends Activity implements OnClickListener {
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
         largeBrush = getResources().getInteger(R.integer.large_size);
-        openGalleryBtn = findViewById(R.id.open_gallery_btn);
+        ImageButton openGalleryBtn = findViewById(R.id.open_gallery_btn);
         openGalleryBtn.setOnClickListener(this);
         toggleMoveBtn = findViewById(R.id.toggle_move_btn);
         toggleMoveBtn.setOnClickListener(this);
-        drawBtn = findViewById(R.id.draw_btn);
+        ImageButton drawBtn = findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
         drawView.setBrushSize(mediumBrush);
-        eraseBtn = findViewById(R.id.erase_btn);
+        ImageButton eraseBtn = findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
-        newBtn = findViewById(R.id.new_btn);
+        ImageButton newBtn = findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
-        saveBtn = findViewById(R.id.save_btn);
+        ImageButton saveBtn = findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
 
         // toolbar stuff
@@ -84,10 +85,8 @@ public class MainActivity extends Activity implements OnClickListener {
             ImageButton imgView = (ImageButton) view;
             String color = view.getTag().toString();
             drawView.setColor(color);
-            imgView.setImageDrawable(getResources().getDrawable(
-                    R.drawable.paint_pressed));
-            currPaint.setImageDrawable(getResources().getDrawable(
-                    R.drawable.paint));
+            imgView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.paint_pressed));
+            currPaint.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.paint));
             currPaint = (ImageButton) view;
         }
     }
@@ -138,7 +137,7 @@ public class MainActivity extends Activity implements OnClickListener {
             final Dialog brushDialog = new Dialog(this);
             brushDialog.setTitle("Brush size:");
             brushDialog.setContentView(R.layout.brush_chooser);
-            ImageButton smallBtn = (ImageButton) brushDialog
+            ImageButton smallBtn = brushDialog
                     .findViewById(R.id.small_brush);
             smallBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -149,7 +148,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     brushDialog.dismiss();
                 }
             });
-            ImageButton mediumBtn = (ImageButton) brushDialog
+            ImageButton mediumBtn = brushDialog
                     .findViewById(R.id.medium_brush);
             mediumBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -161,7 +160,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 }
             });
 
-            ImageButton largeBtn = (ImageButton) brushDialog
+            ImageButton largeBtn = brushDialog
                     .findViewById(R.id.large_brush);
             largeBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -178,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener {
             final Dialog brushDialog = new Dialog(this);
             brushDialog.setTitle("Eraser size:");
             brushDialog.setContentView(R.layout.brush_chooser);
-            ImageButton smallBtn = (ImageButton) brushDialog
+            ImageButton smallBtn = brushDialog
                     .findViewById(R.id.small_brush);
             smallBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -189,7 +188,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     brushDialog.dismiss();
                 }
             });
-            ImageButton mediumBtn = (ImageButton) brushDialog
+            ImageButton mediumBtn = brushDialog
                     .findViewById(R.id.medium_brush);
             mediumBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -199,7 +198,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     brushDialog.dismiss();
                 }
             });
-            ImageButton largeBtn = (ImageButton) brushDialog
+            ImageButton largeBtn = brushDialog
                     .findViewById(R.id.large_brush);
             largeBtn.setOnClickListener(new OnClickListener() {
                 @Override
@@ -230,6 +229,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         }
                     });
             newDialog.show();
+
         } else if (view.getId() == R.id.open_gallery_btn) {
 
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
