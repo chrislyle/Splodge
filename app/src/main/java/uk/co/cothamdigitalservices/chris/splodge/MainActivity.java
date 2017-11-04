@@ -96,7 +96,8 @@ public class MainActivity extends Activity implements OnClickListener {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
                 drawView.selectedImagePath = getPath(selectedImageUri);
-                drawView.updateNewBmp();
+                // gets the dims from the view.
+                drawView.updateNewBmp(0,0);
             }
         }
     }
@@ -249,11 +250,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
                 return;
             }
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent,
-                    "Select Picture"), SELECT_PICTURE);
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, SELECT_PICTURE);
 
         } else if (view.getId() == R.id.toggle_move_btn) {
             drawView.movingImage = !drawView.movingImage;

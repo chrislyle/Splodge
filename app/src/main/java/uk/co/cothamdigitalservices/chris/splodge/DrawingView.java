@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
@@ -33,18 +34,33 @@ public class DrawingView extends ScrollView {
     private Bitmap imageBGBitmap;
     private float brushSize, lastBrushSize;
 
-    float downX = 0;
-    float downY = 0;
-    float currentX, currentY;
+
+
+    float currentX;
+    float currentY;
+
     int totalX = 0;
     int totalY = 0;
+
     int maxLeft = 0;
     int maxRight = 0;
     int maxTop = 0;
     int maxBottom = 0;
 
-    float currScrollX = 0;
-    float currScrollY = 0;
+    float downX = 0;
+    float downY = 0;
+
+    int bitmapWidth = 0;
+    int bitmapHeight = 0;
+
+    int viewWidth = 0;
+    int viewHeight = 0;
+
+    float diffX = 0;
+    float diffY = 0;
+
+    int maxX = 0;
+    int maxY = 0;
 
 
     public DrawingView(Context context, AttributeSet attrs) {
@@ -75,14 +91,10 @@ public class DrawingView extends ScrollView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // view given size
         super.onSizeChanged(w, h, oldw, oldh);
-
-        if(!updateNewBmp()) {
-            canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            drawCanvas = new Canvas(canvasBitmap);
-        }
+        updateNewBmp(w, h);
     }
 
-    public boolean updateNewBmp()
+    public boolean updateNewBmp(int w, int h)
     {
         // loaded an image set it as the background
         imageBGBitmap = null;
@@ -94,48 +106,60 @@ public class DrawingView extends ScrollView {
             imageBGBitmap = BitmapFactory.decodeFile(selectedImagePath, options);
             Bitmap mutableBitmap = imageBGBitmap.copy(Bitmap.Config.ARGB_8888, true);
             if (imageBGBitmap != null) {
-                canvasBitmap = Bitmap.createBitmap(mutableBitmap, 0,0, mutableBitmap.getWidth(),mutableBitmap.getHeight());
-                drawCanvas = new Canvas(canvasBitmap);
+                canvasBitmap = Bitmap.createBitmap(mutableBitmap, 0,0,
+                        mutableBitmap.getWidth(),mutableBitmap.getHeight());
             }
         }
-        return imageBGBitmap != null;
+        if (imageBGBitmap == null){
+            canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        }
+        if ( canvasBitmap != null) {
+            drawCanvas = new Canvas(canvasBitmap);
+            bitmapWidth = canvasBitmap.getWidth();
+            bitmapHeight = canvasBitmap.getHeight();
+            viewWidth = getWidth();
+            viewHeight = getHeight();
+            diffX = bitmapWidth - viewWidth;
+            diffY = bitmapHeight - viewHeight;
+            maxX = ((bitmapWidth / 2) - (viewWidth / 2));
+            maxY = ((bitmapHeight / 2) - (viewHeight / 2));
+            maxLeft = (maxX * -1);
+            maxRight = maxX;
+            maxTop = (maxY * -1);
+            maxBottom = maxY;
+        }
+        else
+            Log.e("updateNewBmp", "Cannot create Bitmap!");
+
+        return canvasBitmap != null;
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // if there is a background then we move the drawing layer with it
         if (imageBGBitmap != null) {
-            canvas.drawBitmap(canvasBitmap, maxLeft + totalX, maxTop + totalY, canvasPaint);
+            canvas.drawBitmap(canvasBitmap, -diffX/2 + totalX ,
+                    -diffY/2 + totalY, canvasPaint);
         }
         else {
             canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         }
-
         canvas.drawPath(drawingPath, drawPaint);
     }
 
     private boolean handleMove(MotionEvent event)
     {
-
         int scrollByX;
         int scrollByY;
+
         // set maximum scroll amount (based on center of image)
-        int maxX = ((canvasBitmap.getWidth() / 2) - (getWidth() / 2));
-        int maxY = ((canvasBitmap.getHeight() / 2) - (getHeight() / 2));
-
-        // set scroll limits
-        maxLeft = (maxX * -1);
-        maxRight = maxX;
-        maxTop = (maxY * -1);
-        maxBottom = maxY;
-
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+
                 currentX = event.getX();
                 currentY = event.getY();
                 scrollByX = (int) -(downX - currentX);
@@ -197,8 +221,6 @@ public class DrawingView extends ScrollView {
                     }
                 }
                 this.scrollBy(scrollByX, scrollByY);
-                currScrollX = scrollByX;
-                currScrollY = scrollByY;
                 downX = currentX;
                 downY = currentY;
                 break;
@@ -225,7 +247,8 @@ public class DrawingView extends ScrollView {
                     drawingPath.lineTo(touchX, touchY);
                     break;
                 case MotionEvent.ACTION_UP:
-                    drawingPath.offset(canvasBitmap.getWidth()/2 - getWidth()/2 - totalX, canvasBitmap.getHeight()/2 - getHeight()/2 - totalY);
+                    drawingPath.offset(bitmapWidth/2 - viewWidth/2 - totalX,
+                            bitmapHeight/2 - viewHeight/2  - totalY);
                     drawCanvas.drawPath(drawingPath, drawPaint);
                     drawingPath.reset();
                     break;
@@ -269,7 +292,7 @@ public class DrawingView extends ScrollView {
     }
 
     public void startNew() {
-        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        drawCanvas.drawColor(Color.WHITE);
         invalidate();
     }
 
