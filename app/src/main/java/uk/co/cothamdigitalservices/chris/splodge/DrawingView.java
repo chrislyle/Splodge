@@ -288,6 +288,7 @@ public class DrawingView extends ScrollView {
     }
 
     public void startNew() {
+        dbuff.clearBuffers();
         drawCanvas.drawColor(Color.WHITE);
         invalidate();
     }

@@ -29,6 +29,11 @@ class DrawingBuffer {
         redoBuffer = new ArrayList<>();
     }
 
+    void clearBuffers(){
+        undoBuffer.clear();
+        redoBuffer.clear();
+    }
+
     void moveTo(int action, int colour, float brushSize, float xpos, float ypos) {
         DrawingBufferItem dbi = new DrawingBufferItem(action, brushSize, colour, xpos, ypos);
         undoBuffer.add(dbi);
@@ -118,33 +123,4 @@ class DrawingBuffer {
                 break;
         }
     }
-//    void redo(Canvas canvas){
-//        if (redoBuffer.size() > 0){
-//            DrawingBufferItem dbi = redoBuffer.get(0);
-//            switch (dbi.getAction())
-//            {
-//                case MotionEvent.ACTION_DOWN:
-//                    undoBuffer.add(0, dbi);
-//                    this.paint.setColor(dbi.getColour());
-//                    this.paint.setStrokeWidth(dbi.getBrushSize());
-//                    this.path.moveTo(dbi.getxPos(), dbi.getyPos());
-//                    break;
-//                case MotionEvent.ACTION_MOVE:
-//                    undoBuffer.add(0, dbi);
-//                    this.paint.setColor(dbi.getColour());
-//                    this.paint.setStrokeWidth(dbi.getBrushSize());
-//                    this.path.lineTo(dbi.getxPos(), dbi.getyPos());
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                    undoBuffer.add(0, dbi);
-//                    this.path.offset(dbi.getxPos(), dbi.getyPos());
-//                    canvas.drawPath(this.path, this.paint);
-//                    this.path.reset();
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
-
 }
