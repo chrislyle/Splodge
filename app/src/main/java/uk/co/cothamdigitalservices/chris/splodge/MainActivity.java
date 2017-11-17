@@ -1,6 +1,7 @@
 package uk.co.cothamdigitalservices.chris.splodge;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,8 +61,10 @@ public class MainActivity extends Activity implements OnClickListener {
         ImageButton drawBtn = findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
         drawView.setBrushSize(mediumBrush);
-        ImageButton eraseBtn = findViewById(R.id.erase_btn);
-        eraseBtn.setOnClickListener(this);
+        ImageButton undoBtn = findViewById(R.id.undo_btn);
+        undoBtn.setOnClickListener(this);
+        ImageButton redoBtn = findViewById(R.id.redo_btn);
+        redoBtn.setOnClickListener(this);
         ImageButton newBtn = findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
         ImageButton saveBtn = findViewById(R.id.save_btn);
@@ -173,43 +176,10 @@ public class MainActivity extends Activity implements OnClickListener {
                 }
             });
             brushDialog.show();
-        } else if (view.getId() == R.id.erase_btn) {
-            // switch to erase - choose size
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Eraser size:");
-            brushDialog.setContentView(R.layout.brush_chooser);
-            ImageButton smallBtn = brushDialog
-                    .findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setErase(true);
-                    drawView.setBrushSize(smallBrush);
-
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton mediumBtn = brushDialog
-                    .findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setErase(true);
-                    drawView.setBrushSize(mediumBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton largeBtn = brushDialog
-                    .findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setErase(true);
-                    drawView.setBrushSize(largeBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            brushDialog.show();
+        } else if (view.getId() == R.id.undo_btn) {
+            drawView.undo();
+        } else if (view.getId() == R.id.redo_btn) {
+            drawView.redo();
         } else if (view.getId() == R.id.new_btn) {
             // new button
             AlertDialog.Builder newDialog = new AlertDialog.Builder(this);

@@ -21,51 +21,41 @@ public class DrawingView extends ScrollView {
     public String selectedImagePath = null;
     public boolean movingImage = false;
 
-    // drawing path
     private Path drawingPath;
-    // drawing and canvas paint
     private Paint drawPaint, canvasPaint;
-    // initial color
     private int paintColor = 0xFF660000;
-    // canvas
     private Canvas drawCanvas;
-    // canvas bitmap
     private Bitmap canvasBitmap;
     private Bitmap imageBGBitmap;
     private float brushSize, lastBrushSize;
 
 
+    private float currentX, currentY;
+    private int totalX, totalY;
+    private int maxLeft, maxRight, maxTop, maxBottom;
+    private float downX, downY;
+    private int bitmapWidth, bitmapHeight;
+    private int viewWidth, viewHeight;
+    private float diffX, diffY;
+    private int maxX, maxY;
 
-    float currentX;
-    float currentY;
 
-    int totalX = 0;
-    int totalY = 0;
 
-    int maxLeft = 0;
-    int maxRight = 0;
-    int maxTop = 0;
-    int maxBottom = 0;
-
-    float downX = 0;
-    float downY = 0;
-
-    int bitmapWidth = 0;
-    int bitmapHeight = 0;
-
-    int viewWidth = 0;
-    int viewHeight = 0;
-
-    float diffX = 0;
-    float diffY = 0;
-
-    int maxX = 0;
-    int maxY = 0;
+    private DrawingBuffer dbuff;
 
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         setupDrawing();
+    }
+
+    public void undo(){
+        dbuff.undo(drawCanvas);
+    }
+
+    public void redo(){
+        dbuff.redo(drawCanvas);
     }
 
     private void setupDrawing() {
@@ -81,6 +71,8 @@ public class DrawingView extends ScrollView {
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         brushSize = getResources().getInteger(R.integer.medium_size);
         lastBrushSize = brushSize;
+
+        dbuff = new DrawingBuffer(this, drawingPath, drawPaint);
     }
 
     public Bitmap getCanvasBitmap() {
@@ -98,7 +90,7 @@ public class DrawingView extends ScrollView {
     {
         // loaded an image set it as the background
         imageBGBitmap = null;
-        if(selectedImagePath != null){
+        if( selectedImagePath != null ){
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds =true;
             BitmapFactory.decodeFile(selectedImagePath, options);
@@ -110,10 +102,10 @@ public class DrawingView extends ScrollView {
                         mutableBitmap.getWidth(),mutableBitmap.getHeight());
             }
         }
-        if (imageBGBitmap == null){
+        if ( imageBGBitmap == null ){
             canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         }
-        if ( canvasBitmap != null) {
+        if ( canvasBitmap != null ) {
             drawCanvas = new Canvas(canvasBitmap);
             bitmapWidth = canvasBitmap.getWidth();
             bitmapHeight = canvasBitmap.getHeight();
@@ -241,16 +233,20 @@ public class DrawingView extends ScrollView {
             float touchY = event.getY();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    drawingPath.moveTo(touchX, touchY);
+                    //drawingPath.moveTo(touchX, touchY);
+                    dbuff.moveTo(MotionEvent.ACTION_DOWN, paintColor, brushSize, touchX, touchY);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    drawingPath.lineTo(touchX, touchY);
+                    //drawingPath.lineTo(touchX, touchY);
+                    dbuff.lineTo(MotionEvent.ACTION_MOVE, paintColor, brushSize, touchX, touchY);
                     break;
                 case MotionEvent.ACTION_UP:
-                    drawingPath.offset(bitmapWidth/2 - viewWidth/2 - totalX,
-                            bitmapHeight/2 - viewHeight/2  - totalY);
-                    drawCanvas.drawPath(drawingPath, drawPaint);
-                    drawingPath.reset();
+//                    drawingPath.offset(bitmapWidth/2 - viewWidth/2 - totalX,
+//                            bitmapHeight/2 - viewHeight/2  - totalY);
+//                    drawCanvas.drawPath(drawingPath, drawPaint);
+//                    drawingPath.reset();
+
+                    dbuff.pathDraw(drawCanvas,bitmapWidth/2 - viewWidth/2 - totalX, bitmapHeight/2 - viewHeight/2  - totalY);
                     break;
                 default:
                     return false;

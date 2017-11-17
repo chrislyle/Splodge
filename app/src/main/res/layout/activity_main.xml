@@ -8,49 +8,62 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         android:orientation="horizontal" >
 
         <ImageButton
+            android:background="#FFCCCCCC"
             android:id="@+id/new_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/start_new"
             android:src="@drawable/new_pic" />
 
         <ImageButton
+            android:background="#FFCCCCCC"
             android:id="@+id/open_gallery_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="Gallery"
             android:src="@drawable/open_gallery_btn" />
 
         <ImageButton
+            android:background="#FFCCCCCC"
             android:id="@+id/toggle_move_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="Toggle Move"
             android:src="@drawable/toggle_move_off_btn" />
 
         <ImageButton
+            android:background="#FFCCCCCC"
             android:id="@+id/draw_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/brush"
             android:src="@drawable/brush" />
 
         <ImageButton
-            android:id="@+id/erase_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:background="#FFCCCCCC"
+            android:id="@+id/undo_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/erase"
-            android:src="@drawable/eraser" />
+            android:src="@drawable/undo" />
+        <ImageButton
+            android:background="#FFCCCCCC"
+            android:id="@+id/redo_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/erase"
+            android:src="@drawable/redo" />
 
         <ImageButton
+            android:background="#FFCCCCCC"
             android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/save"
             android:src="@drawable/save" />
     </LinearLayout>
